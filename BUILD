@@ -29,3 +29,11 @@ cc_binary(
             "@glog//:glog"],
     srcs = ["day1.cc"],
     )
+cc_binary(
+    name = "day2",
+    deps = ["@absl//absl/flags:flag", 
+            "@absl//absl/flags:parse", 
+            "@absl//absl/status",
+            "@glog//:glog"],
+    srcs = ["day2.cc"],
+    )
