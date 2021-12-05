@@ -21,3 +21,11 @@ cc_test(
         "@gtest//:gtest_main"],
     )
     
+cc_binary(
+    name = "day1",
+    deps = ["@absl//absl/flags:flag", 
+            "@absl//absl/flags:parse", 
+            "@absl//absl/status",
+            "@glog//:glog"],
+    srcs = ["day1.cc"],
+    )
