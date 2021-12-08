@@ -3,11 +3,11 @@
 #include <vector>
 #include<limits>
 #include "absl/status/status.h"
-#include "absl/flags/flag.h"
-#include "absl/flags/parse.h"
+#include "gflags/gflags.h"
 #include "glog/logging.h"
 
-ABSL_FLAG(std::string, input, "./day2_input.txt", "file to read input from");
+DEFINE_string(input, "./day2_input.txt", "file to read input from");
+
 
 using Direction = std::pair<int, std::string>;
 
@@ -17,7 +17,19 @@ public:
   Position() : depth_{0}, horizontal_{0} {};
   explicit Position(int depth, int horizontal) : depth_{depth}, horizontal_{horizontal_} {
   }
-  void move(Direction d) {
+  virtual void move(Direction d) =0;
+  int score() const {
+    return depth_ * horizontal_;
+  }
+protected:
+  int depth_;
+  int horizontal_;
+};
+
+class PositionPartOne : public  Position
+{
+public:
+  void move (Direction d) override {
     if (d.second == "forward") {
       horizontal_ +=d.first;
     } else if (d.second == "up") {
@@ -28,13 +40,31 @@ public:
       LOG(FATAL) << "unknown direction";
     }
   }
-  int score() const {
-    return depth_ * horizontal_;
+  
+};
+
+class PositionPartTwo : public  Position
+{
+public:
+  PositionPartTwo() : Position{}, aim_{0} {}
+  explicit PositionPartTwo(int depth, int horizontal, int aim) : Position{depth, horizontal}, aim_{aim} {
+  }
+  void move (Direction d) override {
+    if (d.second == "forward") {
+      horizontal_ += d.first;
+      depth_ += d.first * aim_;
+    } else if (d.second  == "down") {
+      aim_ += d.first;
+    } else if (d.second == "up") {
+      aim_ -= d.first;
+    }
+    LOG(INFO) << aim_ << depth_ << horizontal_ ;
   }
 private:
-  int depth_;
-  int horizontal_;
+  int aim_;
+  
 };
+
 
 absl::Status read_directions(const std::string filename, std::vector<Direction>& results) {
   std::ifstream input_file;
@@ -59,15 +89,18 @@ absl::Status read_directions(const std::string filename, std::vector<Direction>&
 int main(int argc, char *argv[])
 {
   google::InitGoogleLogging(argv[0]);
-  absl::ParseCommandLine(argc, argv);
+  gflags::ParseCommandLineFlags(&argc, &argv, true );
   std::vector<Direction> directions{};
-  auto status = read_directions(absl::GetFlag(FLAGS_input), directions);
+  auto status = read_directions(FLAGS_input, directions);
   CHECK(status.ok());
-  Position p{};
+  PositionPartOne p{};
+  PositionPartTwo p2{};
   for (auto& d: directions) {
     p.move(d);
+    p2.move(d);
   }
   std::cout << p.score() << "\n";
+  std::cout << p2.score() << "\n";
 
   return 0;
 

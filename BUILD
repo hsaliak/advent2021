@@ -31,8 +31,7 @@ cc_binary(
     )
 cc_binary(
     name = "day2",
-    deps = ["@absl//absl/flags:flag", 
-            "@absl//absl/flags:parse", 
+    deps = ["@com_github_gflags_gflags//:gflags", 
             "@absl//absl/status",
             "@glog//:glog"],
     srcs = ["day2.cc"],
