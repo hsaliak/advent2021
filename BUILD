@@ -44,3 +44,12 @@ cc_binary(
             "@glog//:glog"],
     srcs = ["day3.cc"],
     )
+
+cc_binary(
+    name = "day4",
+    deps = ["@com_github_gflags_gflags//:gflags", 
+            "@absl//absl/status:statusor",
+            "@absl//absl/strings:strings",
+            "@glog//:glog"],
+    srcs = ["day4.cc"],
+    )
